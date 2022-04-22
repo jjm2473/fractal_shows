@@ -1,5 +1,7 @@
 #JuliaMap
 
+原仓库 https://gitee.com/jjm2473/JuliaMap
+
 [演示](http://juliamap.oschina.mopaas.com)
 ==========================================
 
