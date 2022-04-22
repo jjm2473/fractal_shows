@@ -1,0 +1,613 @@
+<!doctype html>
+<!--
+copy from
+http://juliamap.googlelabs.com/
+-->
+<html>
+  <head>
+    <title>Julia Map</title>
+    <meta name="description" content="Julia set html 5 renderer.">
+    <meta name="keywords" content="julia, mandelbrot, fractal, math, javascript">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+
+      .legend {
+        font-family: 'arial';
+        font-size: 8pt;
+        color: black;
+        padding: 10px 13px;
+        background-color: rgba(255, 255, 255, 0.7);
+        position: absolute;
+        top: 0;
+        left: 88px;
+        z-index: 100;
+      }
+
+      .paletteControl {
+        padding: 2px;
+        margin: 5px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 100;
+      }
+
+      .functionControl {
+        padding: 13px 5px;
+        position: absolute;
+        top: 0;
+        right: 160px;
+        z-index: 100;
+      }
+
+      .panControl {
+        position: absolute;
+        left: 10px;
+        top: 11px;
+        width: 59px;
+        height: 59px;
+        overflow: hidden;
+        z-index: 100;
+      }
+
+      .panControl img {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 59px;
+        height: 492px;
+      }
+
+      .panControl .leftButton {
+        position: absolute;
+        left: 0;
+        top: 19px;
+        width: 19.3333px;
+        height: 19.3333px;
+        cursor: pointer;
+      }
+
+      .panControl .rightButton {
+        position: absolute;
+        left: 39px;
+        top: 19px;
+        width: 19.3333px;
+        height: 19.3333px;
+        cursor: pointer;
+      }
+
+      .panControl .upButton {
+        position: absolute;
+        left: 19px;
+        top: 0;
+        width: 19.3333px;
+        height: 19.3333px;
+        cursor: pointer;
+      }
+
+      .panControl .downButton {
+        position: absolute;
+        left: 19px;
+        top: 39px;
+        width: 19.3333px;
+        height: 19.3333px;
+        cursor: pointer;
+      }
+
+      .zoomControl {
+        position: absolute;
+        left: 30px;
+        top: 85px;
+        z-index: 100;
+      }
+
+      .zoomControl img {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 19px;
+        height: 42px;
+      }
+
+      .zoomControl .downButton {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 19px;
+        height: 21px;
+        cursor: pointer;
+      }
+
+      .zoomControl .upButton {
+        position: absolute;
+        left: 0;
+        top: 21px;
+        width: 19px;
+        height: 21px;
+        cursor: pointer;
+      }
+
+      .color-picker {
+        padding: 2px;
+        border: 1px solid black;
+        background-color: #eee;
+      }
+
+      .color-picker td {
+        padding: 7px;
+      }
+
+      .color-picker canvas {
+        border-left: 1px solid #777;
+        border-top: 1px solid #777;
+        border-right: 1px solid white;
+        border-bottom: 1px solid white;
+      }
+
+      .color-picker .saturation-panel {
+        cursor: crosshair;
+      }
+
+      .color-picker .lightness-panel {
+        cursor: pointer;
+      }
+
+      .edit-button {
+        width: 31px;
+        height: 29px;
+        cursor: pointer;
+        background: url('imgs/palette.png') no-repeat;
+      }
+
+      .palette-editor {
+        background-color: white;
+        border: 1px solid black;
+        padding: 3px;
+      }
+
+      .map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+      }
+
+      .aboutLink {
+        font-family: arial, sans-serif;
+        font-size: 11px;
+        color: #77c;
+        padding: 2px 5px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 100;
+      }
+
+      .aboutLink.nowebgl {
+        bottom: 0;
+        right: 70px;
+      }
+
+      .aboutBox {
+        font-family: arial, sans-serif;
+        font-size: 13px;
+        position: absolute;
+        width: 500px;
+        z-index: 100;
+        padding: 8px;
+        border: 1px solid black;
+        background-color: #d5ddf3;
+        opacity: 0.9;
+      }
+
+      .aboutBox .middle {
+        vertical-align: top;
+        background-color: white;
+      }
+
+      .aboutBox .content {
+        padding: 15px;
+      }
+
+      .aboutBox h3 {
+        padding: 0;
+        margin: 0;
+        background-color: #efefff;
+        padding: 10px 15px;
+      }
+
+      .aboutBox .buttonBar {
+        text-align: right;
+      }
+
+      .share-button {
+        display: block;
+        width: 22px;
+        height: 22px;
+        background: url("imgs/share_buttons.png") no-repeat left;
+        cursor: pointer;
+      }
+
+      .sb-twitter {
+        background-position: -42px 0;
+      }
+
+      .sb-twitter:hover {
+        background-position: -42px -22px;
+      }
+
+      .sb-buzz {
+        background-position: -84px 0;
+        width: 22px;
+      }
+
+      .sb-buzz:hover {
+        background-position: -84px -22px;
+        width: 22px;
+      }
+
+      #shareControls {
+        padding-top: 14px;
+        position: absolute;
+        top: 0;
+        right: 376px;
+        z-index: 100;
+      }
+    </style>
+    <script id="shader-vertex" type="x-shader/x-vertex">
+      attribute vec3 aVertexPosition;
+
+      void main(void) {
+        gl_Position = vec4(aVertexPosition, 1.0);
+      }
+    </script>
+    <script id="shader-painter" type="x-shader/x-fragment">
+      #ifdef GL_ES
+        precision highp float;
+      #endif
+
+      // Dimension of the image.
+      uniform float width;
+      uniform float height;
+
+      // Textures to paint.
+      uniform sampler2D lowResImage;
+      uniform sampler2D highResImage;
+
+      // If false, will ignore the high resolution texture.
+      uniform bool useHighResImage;
+
+      // Portion of the texture to display.
+      uniform float x0;  // in [0..1]
+      uniform float y0;  // in [0..1]
+      uniform float x1;  // in [0..1]
+      uniform float y1;  // in [0..1]
+
+      void main() {
+        vec2 p = vec2(
+            x0 + gl_FragCoord.x / width * (x1 - x0),
+            y0 + gl_FragCoord.y / height * (y1 - y0));
+        if (p[0] < 0.0 || p[1] < 0.0 || p[0] > 1.0 || p[1] > 1.0) {
+          gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0);
+        } else if (useHighResImage && texture2D(highResImage, p)[3] > 0.0) {
+          gl_FragColor = texture2D(highResImage, p);
+        } else {
+          gl_FragColor = texture2D(lowResImage, p);
+        }
+        gl_FragColor[3] = 1.0;
+      }
+    </script>
+    <script id="shader-mandelbrot" type="x-shader/x-fragment">
+      #ifdef GL_ES
+        precision highp float;
+      #endif
+
+      // Center of the map
+      uniform vec2 origin;
+
+      // Scale of the map
+      uniform float scale;
+
+      // Palette to paint the fractals
+      uniform sampler2D palette;
+
+      // Dimension of the image
+      uniform float width;
+      uniform float height;
+
+      // Square root of the number of samples to compute per pixel.
+      uniform int antiAliasSize;
+
+      const float ESCAPE = 10000.0;
+      const int LIMIT = 1000;
+      const float SCALE = 10.0;
+
+      // --- Complex number operations.
+
+      // Returns z * t
+      vec2 cmul(vec2 z, vec2 t) {
+        return vec2(
+            z[0] * t[0] - z[1] * t[1],
+            z[0] * t[1] + z[1] * t[0]);
+      }
+
+      // Returns z / t
+      vec2 cdiv(vec2 z, vec2 t) {
+        float denom = t[0] * t[0] + t[1] * t[1];
+        return vec2(z[0] * t[0] + z[1] * t[1],
+            z[1] * t[0] - z[0] * t[1]) / denom;
+      }
+
+      // Returns z^2
+      vec2 csqr(vec2 z) {
+        return vec2(z[0] * z[0] - z[1] * z[1], 2.0 * z[0] * z[1]);
+      }
+
+      // Returns |z|^2
+      float cmod2(vec2 z) {
+        return z[0] * z[0] + z[1] * z[1];
+      }
+
+      // Returns 1 / z
+      vec2 cinv(vec2 z) {
+        return vec2(z[0], -z[1]) / (z[0] * z[0] + z[1] * z[1]);
+      }
+
+      // --- Fractal functions
+
+      // z -> z^2 + c
+      vec4 julia(float ca, float cb, float a0, float b0) {
+        vec2 z = vec2(a0, b0);
+        vec2 c = vec2(ca, cb);
+        float colorIndex = 0.0;
+        float iter = float(LIMIT);
+        for (int m = 0; m < LIMIT; ++m) {
+          z = csqr(z) + c;
+          if (cmod2(z) >= ESCAPE) {
+            iter = float(m);
+            colorIndex = SCALE * (float(m + 2) + (log(2.0 * log(ESCAPE)) - log(log(sqrt(cmod2(z))))) / log(2.0));
+            colorIndex = mod(floor(colorIndex), 256.0) / 256.0;
+            break;
+          }
+        }
+        vec4 color = texture2D(palette, vec2(colorIndex, 0));
+        color[3] = iter;  // To compute flops, store the number of iterations in the alpha channel.
+        return color;
+      }
+
+      // z -> z^3 + c
+      vec4 mandelbrot3(float x, float y) {
+        vec2 z = vec2(0.0, 0.0);
+        vec2 c = vec2(x, y);
+        float colorIndex = 0.0;
+        float iter = float(LIMIT);
+        for (int m = 0; m < LIMIT; ++m) {
+          z = cmul(csqr(z), z) + c;
+          if (cmod2(z) >= ESCAPE) {
+            iter = float(m);
+            colorIndex = SCALE * (float(m + 2) + (log(2.0 * log(ESCAPE)) - log(log(sqrt(cmod2(z))))) / log(3.0));
+            colorIndex = mod(floor(colorIndex), 256.0) / 256.0;
+            break;
+          }
+        }
+        vec4 color = texture2D(palette, vec2(colorIndex, 0));
+        color[3] = iter;
+        return color;
+      }
+
+      // z -> z^4 + c
+      vec4 mandelbrot4(float x, float y) {
+        vec2 z = vec2(0.0, 0.0);
+        vec2 c = vec2(x, y);
+        float colorIndex = 0.0;
+        float iter = float(LIMIT);
+        for (int m = 0; m < LIMIT; ++m) {
+          z = csqr(csqr(z)) + c;
+          if (cmod2(z) >= ESCAPE) {
+            iter = float(m);
+            colorIndex = SCALE * (float(m + 2) + (log(2.0 * log(ESCAPE)) - log(log(sqrt(cmod2(z))))) / log(4.0));
+            colorIndex = mod(floor(colorIndex), 256.0) / 256.0;
+            break;
+          }
+        }
+        vec4 color = texture2D(palette, vec2(colorIndex, 0));
+        color[3] = iter;
+        return color;
+      }
+
+      // z -> z^5 + c
+      vec4 mandelbrot5(float x, float y) {
+        vec2 z = vec2(0.0, 0.0);
+        vec2 c = vec2(x, y);
+        float colorIndex = 0.0;
+        float iter = float(LIMIT);
+        for (int m = 0; m < LIMIT; ++m) {
+          z = cmul(csqr(csqr(z)), z) + c;
+          if (cmod2(z) >= ESCAPE) {
+            iter = float(m);
+            colorIndex = SCALE * (float(m + 2) + (log(2.0 * log(ESCAPE)) - log(log(sqrt(cmod2(z))))) / log(5.0));
+            colorIndex = mod(floor(colorIndex), 256.0) / 256.0;
+            break;
+          }
+        }
+        vec4 color = texture2D(palette, vec2(colorIndex, 0));
+        color[3] = iter;
+        return color;
+      }
+
+      // z -> z^16 + c
+      vec4 mandelbrot16(float x, float y) {
+        vec2 z = vec2(0.0, 0.0);
+        vec2 c = vec2(x, y);
+        float colorIndex = 0.0;
+        float iter = float(LIMIT);
+        for (int m = 0; m < LIMIT; ++m) {
+          z = csqr(csqr(csqr(csqr(z)))) + c;
+          if (cmod2(z) >= ESCAPE) {
+            iter = float(m);
+            colorIndex = SCALE * (float(m + 2) + (log(2.0 * log(ESCAPE)) - log(log(sqrt(cmod2(z))))) / log(16.0));
+            colorIndex = mod(floor(colorIndex), 256.0) / 256.0;
+            break;
+          }
+        }
+        vec4 color = texture2D(palette, vec2(colorIndex, 0));
+        color[3] = iter;
+        return color;
+      }
+
+      // z -> z^3 + z^2 + z + 1
+      vec4 mandelbrot321(float x, float y) {
+        vec2 z = vec2(0.0, 0.0);
+        vec2 c = vec2(x, y);
+        float colorIndex = 0.0;
+        float iter = float(LIMIT);
+        for (int m = 0; m < LIMIT; ++m) {
+          z = c + cmul(z, vec2(1.0, 0.0) + z + csqr(z));
+          if (cmod2(z) >= ESCAPE) {
+            iter = float(m);
+            colorIndex = SCALE * (float(m + 2) + (log(2.0 * log(ESCAPE)) - log(log(sqrt(cmod2(z))))) / log(3.0));
+            colorIndex = mod(floor(colorIndex), 256.0) / 256.0;
+            break;
+          }
+        }
+        vec4 color = texture2D(palette, vec2(colorIndex, 0));
+        color[3] = iter;
+        return color;
+      }
+
+      // z -> (2 * z + 1 / z^2) / 3
+      vec4 newton(float x, float y) {
+        vec2 z = vec2(x, y);
+        float colorIndex = 0.0;
+        float iter = float(LIMIT);
+        for (int m = 0; m < LIMIT; ++m) {
+          z = (2.0 * z + cinv(csqr(z))) / 3.0;
+          vec2 delta = cmul(z, csqr(z)) - vec2(1.0, 0.0);
+          if (cmod2(delta) < 0.0001) {
+            iter = float(m);
+            float s = 100.0 * log(2.0 + log(2.0 + iter));
+
+            // Check which root has been reached, and use the corresponding portion of the palette.
+            if (z[1] * z[1] < 0.01) {
+              colorIndex = mod(s, 85.0);
+            } else if (z[1] > 0.5) {
+              colorIndex = 85.0 + mod(s, 85.0);
+            } else {
+              colorIndex = 170.0 + mod(s, 85.0);
+            }
+            colorIndex = mod(floor(colorIndex), 256.0) / 256.0;
+            break;
+          }
+        }
+        vec4 color = texture2D(palette, vec2(colorIndex, 0));
+        color[3] = iter;
+        return color;
+      }
+
+      void main(void) {
+        // Compute multiple samples per pixels for anti-aliasing.
+        vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
+
+        for (int yi = 0; yi < 16; ++yi) {
+          if (yi == antiAliasSize) break;
+          float dy = float(yi) / float(antiAliasSize);
+          for (int xi = 0; xi < 16; ++xi) {
+            if (xi == antiAliasSize) break;
+            float dx = float(xi) / float(antiAliasSize);
+            float x = origin.x + (gl_FragCoord.x + dx) * scale;
+            float y = origin.y + (gl_FragCoord.y + dy) * scale;
+            color += COMPUTE(x, y);
+          }
+        }
+
+        // Compute the average color
+        float sampleCount = float(antiAliasSize) * float(antiAliasSize);
+        color /= sampleCount;
+
+        // The alpha channel contains the number of iterations, to measure the flops.
+        color[3] /= float(LIMIT);
+
+        gl_FragColor = color;
+      }
+    </script>
+    <script type="text/javascript">
+        window.google = window.google || {};
+        google.maps = google.maps || {};
+        var modules = google.maps.modules = {};
+        google.maps.__gjsload__ = function(name, text) {
+          modules[name] = text;
+        };
+
+        google.maps.Load = function(apiLoad) {
+          delete google.maps.Load;
+          apiLoad([0.009999999776482582,[[["https://mts0.googleapis.com/vt?lyrs=m@280000000\u0026src=api\u0026hl=zh-CN\u0026","https://mts1.googleapis.com/vt?lyrs=m@280000000\u0026src=api\u0026hl=zh-CN\u0026"],null,null,null,null,"m@280000000",["https://mts0.google.com/vt?lyrs=m@280000000\u0026src=api\u0026hl=zh-CN\u0026","https://mts1.google.com/vt?lyrs=m@280000000\u0026src=api\u0026hl=zh-CN\u0026"]],[["https://khms0.googleapis.com/kh?v=162\u0026hl=zh-CN\u0026","https://khms1.googleapis.com/kh?v=162\u0026hl=zh-CN\u0026"],null,null,null,1,"162",["https://khms0.google.com/kh?v=162\u0026hl=zh-CN\u0026","https://khms1.google.com/kh?v=162\u0026hl=zh-CN\u0026"]],[["https://mts0.googleapis.com/vt?lyrs=h@280000000\u0026src=api\u0026hl=zh-CN\u0026","https://mts1.googleapis.com/vt?lyrs=h@280000000\u0026src=api\u0026hl=zh-CN\u0026"],null,null,null,null,"h@280000000",["https://mts0.google.com/vt?lyrs=h@280000000\u0026src=api\u0026hl=zh-CN\u0026","https://mts1.google.com/vt?lyrs=h@280000000\u0026src=api\u0026hl=zh-CN\u0026"]],[["https://mts0.googleapis.com/vt?lyrs=t@132,r@280000000\u0026src=api\u0026hl=zh-CN\u0026","https://mts1.googleapis.com/vt?lyrs=t@132,r@280000000\u0026src=api\u0026hl=zh-CN\u0026"],null,null,null,null,"t@132,r@280000000",["https://mts0.google.com/vt?lyrs=t@132,r@280000000\u0026src=api\u0026hl=zh-CN\u0026","https://mts1.google.com/vt?lyrs=t@132,r@280000000\u0026src=api\u0026hl=zh-CN\u0026"]],null,null,[["https://cbks0.googleapis.com/cbk?","https://cbks1.googleapis.com/cbk?"]],[["https://khms0.googleapis.com/kh?v=84\u0026hl=zh-CN\u0026","https://khms1.googleapis.com/kh?v=84\u0026hl=zh-CN\u0026"],null,null,null,null,"84",["https://khms0.google.com/kh?v=84\u0026hl=zh-CN\u0026","https://khms1.google.com/kh?v=84\u0026hl=zh-CN\u0026"]],[["https://mts0.googleapis.com/mapslt?hl=zh-CN\u0026","https://mts1.googleapis.com/mapslt?hl=zh-CN\u0026"]],[["https://mts0.googleapis.com/mapslt/ft?hl=zh-CN\u0026","https://mts1.googleapis.com/mapslt/ft?hl=zh-CN\u0026"]],[["https://mts0.googleapis.com/vt?hl=zh-CN\u0026","https://mts1.googleapis.com/vt?hl=zh-CN\u0026"]],[["https://mts0.googleapis.com/mapslt/loom?hl=zh-CN\u0026","https://mts1.googleapis.com/mapslt/loom?hl=zh-CN\u0026"]],[["https://mts0.googleapis.com/mapslt?hl=zh-CN\u0026","https://mts1.googleapis.com/mapslt?hl=zh-CN\u0026"]],[["https://mts0.googleapis.com/mapslt/ft?hl=zh-CN\u0026","https://mts1.googleapis.com/mapslt/ft?hl=zh-CN\u0026"]],[["https://mts0.googleapis.com/mapslt/loom?hl=zh-CN\u0026","https://mts1.googleapis.com/mapslt/loom?hl=zh-CN\u0026"]]],["zh-CN","US",null,0,null,null,"https://maps.gstatic.com/mapfiles/","https://csi.gstatic.com","https://maps.googleapis.com","https://maps.googleapis.com",null,"https://maps.google.com"],["https://maps.gstatic.com/maps-api-v3/api/js/19/1/intl/zh_cn","3.19.1"],[1238004519],1,null,null,null,null,null,"",null,null,1,"https://khms.googleapis.com/mz?v=162\u0026",null,"https://earthbuilder.googleapis.com","https://earthbuilder.googleapis.com",null,"https://mts.googleapis.com/vt/icon",[["https://mts0.googleapis.com/vt","https://mts1.googleapis.com/vt"],["https://mts0.googleapis.com/vt","https://mts1.googleapis.com/vt"],null,null,null,null,null,null,null,null,null,null,["https://mts0.google.com/vt","https://mts1.google.com/vt"],"/maps/vt",280000000,132],2,500,["https://geo0.ggpht.com/cbk","https://g0.gstatic.com/landmark/tour","https://g0.gstatic.com/landmark/config","","https://www.google.com/maps/preview/log204","","https://static.panoramio.com.storage.googleapis.com/photos/",["https://geo0.ggpht.com/cbk","https://geo1.ggpht.com/cbk","https://geo2.ggpht.com/cbk","https://geo3.ggpht.com/cbk"]],["https://www.google.com/maps/api/js/master?pb=!1m2!1u19!2s1!2szh-CN!3sUS!4s19/1/intl/zh_cn","https://www.google.com/maps/api/js/widget?pb=!1m2!1u19!2s1!2szh-CN"],1,0], loadScriptTime);
+        };
+        var loadScriptTime = (new Date).getTime();
+    </script>
+    <script type="text/javascript" src="mapsapi/mapsapi.js"></script>
+    <script type="text/javascript" src="js/juliamap_js.js"></script>
+    <!--
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-20623632-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src =
+            ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') +
+            '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    -->
+  </head>
+  <body onload="new JuliaApp(document.getElementById('map'))">
+    <div id="shareControls" style="display: none">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td><span id="buzzButton" class="share-button sb-buzz" title="Share this image on Buzz"></span></td>
+          <td><span id="twitterButton" class="share-button sb-twitter" title="Share this image on Twitter"></span></td>
+        </tr>
+      </table>
+    </div>
+    <div id="aboutBox" class="aboutBox" style="display: none">
+      <div class="middle">
+        <h3>About Julia Map</h3>
+        <div class="content">
+          <p>
+            Julia Map is a
+            <a href="http://en.wikipedia.org/wiki/Julia_set" target="_blank">Julia
+            set</a> renderer built in HTML 5, WebGL and JavaScript. Each pixel requires
+            the computation of a series of numbers and a measurement of the convergence or divergence
+            of the series. Each image usually consists of millions of
+            numbers. Modern browsers have optimized JavaScript execution up to a
+            point where it is now possible to render fractals like the Julia sets
+            in a few seconds.
+          </p>
+          <p>
+            We hope you will enjoy exploring the different Julia sets, and share
+            the URLs of the nicest images you discovered.
+          </p>
+          <p>
+            Daniel Wolf,<br/>
+            Software Engineer
+          </p>
+          <div class="buttonBar">
+            <input id="closeAboutDialog" type="button" value="Close">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="controls"></div>
+    <div id="map" class="map"></div>
+  </body>
+</html>
