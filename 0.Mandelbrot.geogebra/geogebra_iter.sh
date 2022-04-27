@@ -65,7 +65,7 @@ cat <<-EOF
 	<layer val="0"/>
 	<labelOffset x="-2" y="-8"/>
 	<labelMode val="0"/>
-	<trace val="true"/>
+	<trace val="false"/>
 	<animation step="0.1" speed="1" type="1" playing="false"/>
 	<coordStyle style="complex"/>
 	<pointSize val="5"/>
@@ -135,7 +135,7 @@ cat <<-EOF
 	<layer val="0"/>
 	<labelMode val="0"/>
 	<auxiliary val="true"/>
-	<javascript onUpdate="if (Math.pow(ggbApplet.getXcoord(&quot;A_{$LAST}&quot;),2) + Math.pow(ggbApplet.getYcoord(&quot;A_{$LAST}&quot;),2) &gt; 4) {&#xa;  ggbApplet.setColor(&quot;C&quot;, 255, 0, 0);&#xa;} else {&#xa;  ggbApplet.setColor(&quot;C&quot;, 0, 0, 255);&#xa;}"/>
+	<javascript onUpdate="if (Math.pow(ggbApplet.getXcoord(&quot;A_{$LAST}&quot;),2) + Math.pow(ggbApplet.getYcoord(&quot;A_{$LAST}&quot;),2) &gt; 4) {&#xa;  ggbApplet.setColor(&quot;C&quot;, 30,129,176);&#xa;} else {&#xa;  ggbApplet.setColor(&quot;C&quot;, 226,135,67);&#xa;}"/>
 	<coordStyle style="complex"/>
 	<pointSize val="4"/>
 	<pointStyle val="0"/>
