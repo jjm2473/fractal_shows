@@ -1,11 +1,11 @@
 #!/bin/bash
-ITERATORS=10
+ITERATORS=13
 
 cat <<-EOF
 <?xml version="1.0" encoding="utf-8"?>
 <geogebra format="5.0" version="5.0.701.0" app="geometry" platform="w" id="beb7526e-cb62-47f1-9794-c141ebb11bdf"  xsi:noNamespaceSchemaLocation="http://www.geogebra.org/apps/xsd/ggb.xsd" xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 <gui>
-	<window width="1440" height="663" />
+	<window width="1440" height="900" />
 	<perspectives>
 <perspective id="tmp">
 	<panes>
@@ -62,7 +62,7 @@ cat <<-EOF
 <element type="point" label="C">
 	<show object="true" label="true" ev="4"/>
 	<objColor r="255" g="0" b="0" alpha="0"/>
-	<layer val="0"/>
+	<layer val="1"/>
 	<labelOffset x="-2" y="-8"/>
 	<labelMode val="0"/>
 	<trace val="false"/>
@@ -113,13 +113,14 @@ for i in `seq 2 $ITERATORS`; do
     cat <<-EOF
 <expression label="A_{$i}" exp="A_{$i0}^(2) + C" type="point" />
 <element type="point" label="A_{$i}">
-	<show object="true" label="true"/>
+	<show object="true" label="false"/>
 	<objColor r="97" g="97" b="97" alpha="0"/>
 	<layer val="0"/>
 	<labelMode val="0"/>
 	<auxiliary val="true"/>
+	<selectionAllowed val="false"/>
 	<coordStyle style="complex"/>
-	<pointSize val="4"/>
+	<pointSize val="2"/>
 	<pointStyle val="0"/>
 	<coords x="0" y="0" z="1"/>
 </element>
@@ -135,7 +136,8 @@ cat <<-EOF
 	<layer val="0"/>
 	<labelMode val="0"/>
 	<auxiliary val="true"/>
-	<javascript onUpdate="if (Math.pow(ggbApplet.getXcoord(&quot;A_{$LAST}&quot;),2) + Math.pow(ggbApplet.getYcoord(&quot;A_{$LAST}&quot;),2) &gt; 4) {&#xa;  ggbApplet.setColor(&quot;C&quot;, 30,129,176);&#xa;} else {&#xa;  ggbApplet.setColor(&quot;C&quot;, 226,135,67);&#xa;}"/>
+	<selectionAllowed val="false"/>
+	<javascript onUpdate="if (!ggbApplet.getVisible(&quot;A_{$LAST}&quot;) || Math.pow(ggbApplet.getXcoord(&quot;A_{$LAST}&quot;),2) + Math.pow(ggbApplet.getYcoord(&quot;A_{$LAST}&quot;),2) &gt; 4) {&#xa;  ggbApplet.setColor(&quot;C&quot;, 30,129,176);&#xa;} else {&#xa;  ggbApplet.setColor(&quot;C&quot;, 226,135,67);&#xa;}"/>
 	<coordStyle style="complex"/>
 	<pointSize val="4"/>
 	<pointStyle val="0"/>
