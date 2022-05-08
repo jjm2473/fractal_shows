@@ -5,3 +5,9 @@
 3. 1.Mandelbrot.webgl/index.html ：曼德勃罗集，朱莉亚集的网页渲染程序，[在线演示](https://jjm2473.github.io/JuliaMap/index.html)
 4. 2.LSystem.2D/index.html ：2D版L-System的网页渲染程序，[在线演示](https://jjm2473.github.io/l-sys.js/src/index.html)
 5. 3.LSystem.3D/Drips_LSystem/example*.blend ：3D版L-System样例（[支持作者](https://100drips.gumroad.com/l/lsystem)），打开方式 **Blender** 3.1+
+
+# 画廊
+![GeoGebra Geometry](images/ggb.png)
+![曼德勃罗集](images/mandelbrot.png)
+![2D版L-System](images/2dlsystem.png)
+![3D版L-System](images/3dlsystem.webp)
